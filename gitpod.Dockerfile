@@ -1,38 +1,37 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG OWNER=jupyter
-ARG BASE_CONTAINER=$OWNER/pyspark-notebook
-FROM $BASE_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+FROM pyspark-notebook
 
-# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
-# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
-USER root
+# # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# RSpark config
-ENV R_LIBS_USER "${SPARK_HOME}/R/lib"
-RUN fix-permissions "${R_LIBS_USER}"
+# USER root
 
-# R pre-requisites
-RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends \
-    fonts-dejavu \
-    gfortran \
-    gcc && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# # RSpark config
+# ENV R_LIBS_USER "${SPARK_HOME}/R/lib"
+# RUN fix-permissions "${R_LIBS_USER}"
 
-USER ${NB_UID}
+# # R pre-requisites
+# RUN apt-get update --yes && \
+#     apt-get install --yes --no-install-recommends \
+#     fonts-dejavu \
+#     gfortran \
+#     gcc && \
+#     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# R packages including IRKernel which gets installed globally.
-RUN mamba install --quiet --yes \
-    'r-base' \
-    'r-ggplot2' \
-    'r-irkernel' \
-    'r-rcurl' \
-    'r-sparklyr' && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+# USER ${NB_UID}
+
+# # R packages including IRKernel which gets installed globally.
+# RUN mamba install --quiet --yes \
+#     'r-base' \
+#     'r-ggplot2' \
+#     'r-irkernel' \
+#     'r-rcurl' \
+#     'r-sparklyr' && \
+#     mamba clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}" && \
+#     fix-permissions "/home/${NB_USER}"
