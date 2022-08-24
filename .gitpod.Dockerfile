@@ -121,6 +121,8 @@ RUN fix-permissions "/home/${NB_USER}"
 COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
 WORKDIR /tmp
 
+USER root
+
 RUN set -x && \
      arch=$(uname -m) && \
      if [ "${arch}" = "x86_64" ]; then \
@@ -143,12 +145,9 @@ RUN set -x && \
         'notebook' \
         'jupyterhub' \
         'jupyterlab' \
-    rm micromamba 
+    rm micromamba && \
      # Pin major.minor version of python
-     
-USER root
-
-RUN mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
+    mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
     jupyter notebook --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \
