@@ -1,9 +1,54 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-FROM jupyter/all-spark-notebook
+# Ubuntu 22.04 (jammy)
+# https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
+ARG ROOT_CONTAINER=ubuntu:22.04
+
+FROM $ROOT_CONTAINER
+
+LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+ARG NB_USER="gitpod"
+ARG NB_UID="1000"
+ARG NB_GID="100"
+
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER root
 
-RUN apt-get -y update && apt-get install -y coreutils
+# Install all OS dependencies for notebook server that starts but lacks all
+# features (e.g., download as all possible file formats)
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update --yes && \
+    # - apt-get upgrade is run to patch known vulnerabilities in apt-get packages as
+    #   the ubuntu base image is rebuilt too seldom sometimes (less than once a month)
+    apt-get upgrade --yes && \
+    apt-get install --yes --no-install-recommends \
+    # - bzip2 is necessary to extract the micromamba executable.
+    bzip2 \
+    ca-certificates \
+    fonts-liberation \
+    locales \
+    # - pandoc is used to convert notebooks to html files
+    #   it's not present in arm64 ubuntu image, so we install it here
+    pandoc \
+    # - run-one - a wrapper script that runs no more
+    #   than one unique  instance  of  some  command with a unique set of arguments,
+    #   we use `run-one-constantly` to support `RESTARTABLE` option
+    run-one \
+    sudo \
+    # - tini is installed as a helpful container entrypoint that reaps zombie
+    #   processes and such of the actual executable we want to start, see
+    #   https://github.com/krallin/tini#why-tini for details.
+    tini \
+    wget && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
 
+
+USER ${NB_UID}
+
+WORKDIR "${HOME}"
