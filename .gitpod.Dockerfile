@@ -100,8 +100,11 @@ USER ${NB_UID}
 ARG PYTHON_VERSION=3.10
 
 # Setup work directory for backward-compatibility
-RUN mkdir "/home/${NB_USER}/work" && \
-    fix-permissions "/home/${NB_USER}"
+# RUN mkdir "/home/${NB_USER}/gitpod" && \
+#     fix-permissions "/home/${NB_USER}"
+
+RUN fix-permissions "/home/${NB_USER}"
+
 
 # Download and install Micromamba, and initialize Conda prefix.
 #   <https://github.com/mamba-org/mamba#micromamba>
