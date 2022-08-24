@@ -129,9 +129,9 @@ RUN set -x && \
      wget -qO /tmp/micromamba.tar.bz2 \
          "https://micromamba.snakepit.net/api/micromamba/linux-${arch}/latest" && \
      tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
-     rm /tmp/micromamba.tar.bz2
-    #  PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
-    #  if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
+     rm /tmp/micromamba.tar.bz2 && \
+     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
+     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi 
      # Install the packages
     # ./micromamba install \
     #     --root-prefix="${CONDA_DIR}" \
