@@ -69,11 +69,11 @@ RUN apt-get update && \
     curl -sSLo /usr/local/bin/dind https://raw.githubusercontent.com/jpetazzo/dind/master/wrapdocker && \
     chmod +x /usr/local/bin/
 
-# RUN apt-get update && \
-#     apt-get install -y python3-pip
+RUN apt-get update && \
+    apt-get install -y python3-pip
 
 # # Copy a script that we will use to correct permissions after running certain commands
-# COPY fix-permissions /usr/local/bin/fix-permissions
+COPY fix-permissions /usr/local/bin/fix-permissions
 # RUN chmod a+rx /usr/local/bin/fix-permissions
 
 # # Enable prompt color in the skeleton .bashrc before creating the default NB_USER
