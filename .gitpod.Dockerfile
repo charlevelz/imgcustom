@@ -132,27 +132,27 @@ RUN set -x && \
      tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
      rm /tmp/micromamba.tar.bz2 && \
      PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
-     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi
+     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
      # Install the packages
-    # ./micromamba install \
-    #     --root-prefix="${CONDA_DIR}" \
-    #     --prefix="${CONDA_DIR}" \
-    #     --yes \
-    #     "${PYTHON_SPECIFIER}" \
-    #     'mamba' \
-    #     'notebook' \
-    #     'jupyterhub' \
-    #     'jupyterlab' \
-    # rm micromamba && \
-    #  # Pin major.minor version of python
-    # mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
-    # jupyter notebook --generate-config && \
-    # mamba clean --all -f -y && \
-    # npm cache clean --force && \
-    # jupyter lab clean && \
-    # rm -rf "/home/${NB_USER}/.cache/yarn" && \
-    # fix-permissions "${CONDA_DIR}" && \
-    # fix-permissions "/home/${NB_USER}"
+    ./micromamba install \
+        --root-prefix="${CONDA_DIR}" \
+        --prefix="${CONDA_DIR}" \
+        --yes \
+        "${PYTHON_SPECIFIER}" \
+        'mamba' \
+        'notebook' \
+        'jupyterhub' \
+        'jupyterlab' \
+    rm micromamba && \
+     # Pin major.minor version of python
+    mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
+    jupyter notebook --generate-config && \
+    mamba clean --all -f -y && \
+    npm cache clean --force && \
+    jupyter lab clean && \
+    rm -rf "/home/${NB_USER}/.cache/yarn" && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 
  EXPOSE 8888
