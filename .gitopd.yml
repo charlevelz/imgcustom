@@ -1,2 +1,2 @@
 image:
-  file: jupyter/all-spark-notebook
+  file: .gitpod.Dockerfile
