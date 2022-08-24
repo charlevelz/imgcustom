@@ -135,15 +135,15 @@ RUN set -x && \
      if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
      # Install the packages
     ./micromamba install \
-        --root-prefix="${CONDA_DIR}" \
-        --prefix="${CONDA_DIR}" \
-        --yes \
-        "${PYTHON_SPECIFIER}" \
-        'mamba' \
-        'notebook' \
-        'jupyterhub' \
-        'jupyterlab' \
-    rm micromamba && \
+        --root-prefix="${CONDA_DIR}" 
+    #     --prefix="${CONDA_DIR}" \
+    #     --yes \
+    #     "${PYTHON_SPECIFIER}" \
+    #     'mamba' \
+    #     'notebook' \
+    #     'jupyterhub' \
+    #     'jupyterlab' \
+    # rm micromamba && \
      # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
     jupyter notebook --generate-config && \
