@@ -158,8 +158,8 @@ RUN set -x && \
  EXPOSE 8888
 
 # Configure container startup
-ENTRYPOINT ["tini", "-g", "--"]
-CMD ["start-notebook.sh"]
+# ENTRYPOINT ["tini", "-g", "--"]
+# CMD ["start-notebook.sh"]
 
 # # Copy local files as late as possible to avoid cache busting
 # COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
