@@ -1,6 +1,6 @@
-image: 
-  file: .gitpod.Dockerfile
+# image: 
+#   file: .gitpod.Dockerfile
 
-ports:
-  - port: 8888
-    onOpen: ignore
+# ports:
+#   - port: 8888
+#     onOpen: ignore
