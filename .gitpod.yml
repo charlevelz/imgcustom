@@ -9,10 +9,10 @@ ports:
   # - port: 5555
   #   onOpen: open-browser
 
-tasks:
-    - name: configure container startup
-      command: |
-         ENTRYPOINT ["tini", "-g", "--"]
+# tasks:
+#     - name: configure container startup
+#       command: |
+#          ENTRYPOINT ["tini", "-g", "--"]
 
 #   - name: install pre-commit git hooks
 #     init: pre-commit install
