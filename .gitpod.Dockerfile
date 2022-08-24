@@ -155,11 +155,11 @@ RUN set -x && \
     # fix-permissions "/home/${NB_USER}"
 
 
- #EXPOSE 8888
+ EXPOSE 8888
 
-# # Configure container startup
-# ENTRYPOINT ["tini", "-g", "--"]
-# CMD ["start-notebook.sh"]
+# Configure container startup
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["start-notebook.sh"]
 
 # # Copy local files as late as possible to avoid cache busting
 # COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
