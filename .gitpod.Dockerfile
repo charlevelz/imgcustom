@@ -158,7 +158,7 @@ RUN set -x && \
 
 USER ${NB_UID}
 
- EXPOSE 8888
+EXPOSE 8888
 
 # # Configure container startup
 # ENTRYPOINT ["tini", "-g", "--"]
