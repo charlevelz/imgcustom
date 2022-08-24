@@ -94,16 +94,16 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     fix-permissions "${HOME}" && \
     fix-permissions "${CONDA_DIR}"
 
-# USER ${NB_UID}
+USER ${NB_UID}
 
 # # Pin python version here, or set it to "default"
-# ARG PYTHON_VERSION=3.10
+ARG PYTHON_VERSION=3.10
 
 # # Setup work directory for backward-compatibility
 # # RUN mkdir "/home/${NB_USER}/gitpod" && \
 # #     fix-permissions "/home/${NB_USER}"
 
-# RUN fix-permissions "/home/${NB_USER}"
+RUN fix-permissions "/home/${NB_USER}"
 
 
 # # Download and install Micromamba, and initialize Conda prefix.
