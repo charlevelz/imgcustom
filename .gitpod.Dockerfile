@@ -156,7 +156,9 @@ RUN set -x && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# EXPOSE 8888
+USER ${NB_UID}
+
+ EXPOSE 8888
 
 # # Configure container startup
 # ENTRYPOINT ["tini", "-g", "--"]
@@ -183,6 +185,6 @@ RUN set -x && \
 #      http${GEN_CERT:+s}://localhost:8888${JUPYTERHUB_SERVICE_PREFIX:-/}api || exit 1
 
 
-USER ${NB_UID}
+#USER ${NB_UID}
 
 WORKDIR "${HOME}"
