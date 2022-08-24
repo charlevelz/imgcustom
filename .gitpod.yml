@@ -12,7 +12,7 @@ ports:
 tasks:
     - name: configure container startup
       command: |
-         sudo "tini", "-g", "--"
+         ENTRYPOINT ["tini", "-g", "--"]
 
 #   - name: install pre-commit git hooks
 #     init: pre-commit install
