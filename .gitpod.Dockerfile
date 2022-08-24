@@ -135,10 +135,10 @@ RUN set -x && \
      if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
      # Install the packages
     ./micromamba install \
-        --root-prefix="${CONDA_DIR}" 
-    #     --prefix="${CONDA_DIR}" \
-    #     --yes \
-    #     "${PYTHON_SPECIFIER}" \
+          --root-prefix="${CONDA_DIR}"  \
+        --prefix="${CONDA_DIR}" \
+        --yes \
+        "${PYTHON_SPECIFIER}"  \
     #     'mamba' \
     #     'notebook' \
     #     'jupyterhub' \
