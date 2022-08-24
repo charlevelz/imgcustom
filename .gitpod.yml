@@ -9,7 +9,11 @@ ports:
   # - port: 5555
   #   onOpen: open-browser
 
-# tasks:
+tasks:
+    - name: configure container startup
+      command: |
+         sudo "tini", "-g", "--"
+
 #   - name: install pre-commit git hooks
 #     init: pre-commit install
 #   - name: start up buildkitd
