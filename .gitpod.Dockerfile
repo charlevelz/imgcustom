@@ -118,6 +118,9 @@ RUN fix-permissions "/home/${NB_USER}"
 # # Correct permissions
 # # Do all this in a single RUN command to avoid duplicating all of the
 # # files across image layers when the permissions change
+
+USER root
+
 COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
 WORKDIR /tmp
 RUN set -x && \
@@ -152,9 +155,10 @@ RUN set -x && \
     rm -rf "/home/${NB_USER}/.cache/yarn" && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
+    
+USER ${NB_UID}
 
-
- EXPOSE 8888
+EXPOSE 8888
 
 # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
