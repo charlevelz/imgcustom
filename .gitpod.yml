@@ -1,4 +1,4 @@
-image: carlsvelzm/jupyter-all-spark
+image: gitpodregistry20.azurecr.io/jupyter-all-spark:latest
   #file: .gitpod.Dockerfile
 
 ports:
