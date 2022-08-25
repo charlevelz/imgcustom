@@ -4,7 +4,7 @@
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
 
-FROM gitpod/workspace-base
+FROM gitpod/workspace-full
 
 ARG NB_USER="gitpod"
 ARG NB_UID="1000"
