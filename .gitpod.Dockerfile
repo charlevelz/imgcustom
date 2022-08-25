@@ -1,35 +1,85 @@
-ARG BASE_CONTAINER=abxda/geobigdata:0.19
-FROM $BASE_CONTAINER
+FROM carlsvelzm/jupyter-all-spark
 
-# Switch to user root so we can add additional jars, packages and configuration files.
-USER root
+LABEL original_maintainer="Puckel_"
+LABEL maintainer="wuuker"
 
-RUN apt-get -y update && apt-get install -y coreutils
+# Never prompt the user for choices on installation/configuration of packages
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM linux
 
-RUN rm -rf $SPARK_HOME/jars/httpclient-4.5.6.jar
+# Airflow
+ARG AIRFLOW_VERSION=2.2.1
+ARG AIRFLOW_USER_HOME=/usr/local/airflow
+ARG AIRFLOW_DEPS=""
+ARG PYTHON_DEPS=""
+ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 
-# Add dependency for hadoop-aws
-ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.11.883/aws-java-sdk-1.11.883.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/aws-java-sdk-1.11.883.jar
+# Define en_US.
+ENV LANGUAGE en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
+ENV LC_MESSAGES en_US.UTF-8
 
-ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.11.883/aws-java-sdk-core-1.11.883.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/aws-java-sdk-core-1.11.883.jar
+# Disable noisy "Handling signal" log messages:
+# ENV GUNICORN_CMD_ARGS --log-level WARNING
 
-ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-dynamodb/1.11.883/aws-java-sdk-dynamodb-1.11.883.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/aws-java-sdk-dynamodb-1.11.883.jar
+RUN set -ex \
+    && buildDeps=' \
+        freetds-dev \
+        libkrb5-dev \
+        libsasl2-dev \
+        libssl-dev \
+        libffi-dev \
+        libpq-dev \
+        git \
+        rustc \
+        cargo \
+    ' \
+    && apt-get update -yqq \
+    && apt-get upgrade -yqq \
+    && apt-get install -yqq --no-install-recommends \
+        $buildDeps \
+        freetds-bin \
+        build-essential \
+        default-libmysqlclient-dev \
+        apt-utils \
+        curl \
+        rsync \
+        netcat \
+        locales \
+    && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
+    && pip install -U pip setuptools wheel \
+    && pip install pytz \
+    && pip install pyOpenSSL \
+    && pip install ndg-httpsclient \
+    && pip install pyasn1 \
+    && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+    && pip install redis \
+    && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
+    && apt-get purge --auto-remove -yqq $buildDeps \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf \
+        /var/lib/apt/lists/* \
+        /tmp/* \
+        /var/tmp/* \
+        /usr/share/man \
+        /usr/share/doc \
+        /usr/share/doc-base
 
-ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.883/aws-java-sdk-s3-1.11.883.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/aws-java-sdk-s3-1.11.883.jar
+COPY script/entrypoint.sh /entrypoint.sh
+COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
+COPY config/webserver_config.py ${AIRFLOW_USER_HOME}/webserver_config.py
 
-ADD https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.2.0/hadoop-aws-3.2.0.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/hadoop-aws-3.2.0.jar
+RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
-ADD https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.9/httpclient-4.5.9.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/httpclient-4.5.9.jar 
+EXPOSE 8080 5555 8793
 
-ADD https://jdbc.postgresql.org/download/postgresql-42.2.19.jar $SPARK_HOME/jars
-RUN chmod -R 644 $SPARK_HOME/jars/postgresql-42.2.19.jar
-
-
-#Required for minIO service discovery by name.
-# ADD /config/spark-defaults.conf /opt/spark/conf/
+USER airflow
+WORKDIR ${AIRFLOW_USER_HOME}
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["webserver"]
