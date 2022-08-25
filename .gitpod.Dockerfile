@@ -119,10 +119,10 @@ RUN fix-permissions "/home/${NB_USER}"
 # # Do all this in a single RUN command to avoid duplicating all of the
 # # files across image layers when the permissions change
 
+USER root
+
 COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
 WORKDIR /tmp
-
-USER root
 
 RUN set -x && \
     arch=$(uname -m) && \
