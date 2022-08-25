@@ -1,4 +1,4 @@
-FROM gitpod/workspace-base
+FROM python:3.9-slim-bullseye
 
 LABEL original_maintainer="Puckel_"
 LABEL maintainer="wuuker"
