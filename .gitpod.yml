@@ -6,6 +6,11 @@ ports:
   onOpen: open-preview
 - port: 8888
   onOpen: open-browser
+- port: 5555
+  onOpen: open-preview
+- port: 8793
+  onOpen: open-browser
+
   # - port: 5432
   #   onOpen: ignore
   # - port: 5555
