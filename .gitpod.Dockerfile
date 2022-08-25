@@ -1,4 +1,4 @@
-FROM carlsvelzm/jupyter-all-spark
+FROM gitpod/workspace-base
 
 LABEL original_maintainer="Puckel_"
 LABEL maintainer="wuuker"
